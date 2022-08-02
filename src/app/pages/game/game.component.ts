@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { WordTree } from 'src/app/word-tree/word.tree';
 
 @Component({
   selector: 'gst-game',
@@ -7,6 +8,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./game.component.scss']
 })
 export class GameComponent implements OnInit {
+  wordTree: WordTree = new WordTree([]);
+
+  loading: boolean = true;
 
   constructor(private http: HttpClient) { }
 
@@ -16,7 +20,8 @@ export class GameComponent implements OnInit {
 
   processWordList(): void {
     this.http.get('assets/WORD.LST', { responseType: 'text' }).subscribe(data => {
-      console.log('data', data.split('\n'))
+      this.wordTree = new WordTree(data.split('\n'))
+      this.loading = false;
     })
   }
 
