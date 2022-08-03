@@ -78,6 +78,14 @@ export class WordNode {
     
     private _children: { [character: string]: WordNode } = {};
 
+    private _wordsByLength: {[length: number]: string[]} = {};
+
+    private _longestOddLengthWord: number | null = null;
+    private _longestEvenLengthWord: number | null = null;
+
+    private _shortestOddLengthWord: number | null = null;
+    private _shortestEvenLengthWord: number | null = null;
+
     constructor(wordTree: WordTree, character: string, word: string) {
         this._wordTree = wordTree;
         this._character = character;
@@ -86,6 +94,30 @@ export class WordNode {
     }
 
     addWord(word: string): void {
+        if (word.length % 2 === 0) {
+            if (this._longestEvenLengthWord === null || this._longestEvenLengthWord < word.length) {
+                this._longestEvenLengthWord = word.length;
+            }
+            
+            if (this._shortestEvenLengthWord === null || this._shortestEvenLengthWord > word.length) {
+                this._shortestEvenLengthWord = word.length
+            }
+        } else {
+            if (this._longestOddLengthWord === null || this._longestOddLengthWord < word.length) {
+                this._longestOddLengthWord = word.length;
+            }
+            
+            if (this._shortestOddLengthWord === null || this._shortestOddLengthWord > word.length) {
+                this._shortestOddLengthWord = word.length
+            }
+        }
+
+        if (!this._wordsByLength[word.length]) {
+            this._wordsByLength[word.length] = [];
+        }
+        this._wordsByLength[word.length].push(word)
+
+
         this._completions.add(word);
     }
 
