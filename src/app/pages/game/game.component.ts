@@ -54,12 +54,13 @@ export class GameComponent implements OnInit {
       this.playerGhost++;
     } else {
       const nextChar = this.computerNextMove();
+      const word = `${this.textValue}${nextChar}`;
 
-      if (!nextChar) {
+      if (!nextChar || this.wordTree.has(word)) {
         this.textValue = '';
         this.computerGhost++;
       } else {
-        this.textValue = `${this.textValue}${nextChar}`
+        this.textValue = word;
       }
     }
 
@@ -76,29 +77,39 @@ export class GameComponent implements OnInit {
     }
 
     const possibleOddPlays: string[] = []
-    const allPossiblePlays: string[] = []
-    for (let count = node.longestOddLengthWord; count >= 0; count -= 1) {
+    for (let count = node.longestOddLengthWord; count >= 0; count -= 2) {
       for (let i = 0; i < node.getWordsByLength(count).length; i++) {
         const word = node.getWordsByLength(count)[i];
         const nextChar = word.slice(this.textValue.length).charAt(0);
         
         if (!this.wordTree.has(`${this.textValue}${nextChar}`)) {
-          if (count % 2 === 1) {
             possibleOddPlays.push(nextChar);
-          }
-
-          allPossiblePlays.push(nextChar)
         }
       }
     }
 
     if (possibleOddPlays.length > 0) {
       return possibleOddPlays[Math.floor(Math.random() * possibleOddPlays.length)];
-    } else if (allPossiblePlays.length > 0) {
-      return allPossiblePlays[Math.floor(Math.random() * allPossiblePlays.length)];
     } else {
-      return null;
+      const longestWord = this.findLongestPlayableWord([...node.completions]);
+      console.log('longest word', longestWord)
+      return longestWord.length > 0 ? longestWord.slice(this.textValue.length).charAt(0) : null;
     }
   }
 
+  findLongestPlayableWord(words: string[]): string {
+    let longestWord: string = '';
+    for (let w = 0; w < words.length; w++) {
+      const word = words[w];
+      for (let c = 0; c < word.length; c++) {
+        const wordSlice = word.slice(0, c);
+        if (this.wordTree.has(wordSlice) && longestWord.length < wordSlice.length) {
+          longestWord = wordSlice;
+          break;
+        }
+      }      
+    }
+
+    return longestWord;
+  }
 }
