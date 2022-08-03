@@ -23,29 +23,30 @@ export class GameComponent implements OnInit {
 
   loading: boolean = true;
 
-  player1Ghost: number = 0;
-  player2Ghost: number = 0;
+  pastWords: string[] = [];
 
-  player1State: string = 'idle';
-  player1States: any = {
+  animationStates: any = {
     idle: {animationName: 'idle', loop: true, onDone: () => {}},
-    hit: {animationName: 'hit', loop: false, onDone: () => this.player1State = 'idle'},
-    danceEnter: {animationName: 'danceEnter', loop: false, onDone: () => this.player1State = 'dance'},
+    hit: {animationName: 'hit', loop: false, onDone: (player: 1 | 2) => this.playerStates[player].currentState = 'idle'},
+    danceEnter: {animationName: 'danceEnter', loop: false, onDone: (player: 1 | 2) => this.playerStates[player].currentState = 'dance'},
     dance: {animationName: 'dance', loop: true, onDone: () => {}},
-    ghostEnter: {animationName: 'ghostEnter', loop: false, onDone: () => this.player1State = 'ghost'},
+    ghostEnter: {animationName: 'ghostEnter', loop: false, onDone: (player: 1 | 2) => this.playerStates[player].currentState = 'ghost'},
     ghost: {animationName: 'ghost', loop: true, onDone: () => {}},
-    victory: {animationName: 'victory', loop: false, onDone: () => this.player1State = 'idle'},
+    victory: {animationName: 'victory', loop: false, onDone: (player: 1 | 2) => this.playerStates[player].currentState = 'idle'},
   }
 
-  player2State: string = 'idle';
-  player2States: any = {
-    idle: {animationName: 'idle', loop: true, onDone: () => {}},
-    hit: {animationName: 'hit', loop: false, onDone: () => this.player2State = 'idle'},
-    danceEnter: {animationName: 'danceEnter', loop: false, onDone: () => this.player2State = 'dance'},
-    dance: {animationName: 'dance', loop: true, onDone: () => {}},
-    ghostEnter: {animationName: 'ghostEnter', loop: false, onDone: () => this.player1State = 'ghost'},
-    ghost: {animationName: 'ghost', loop: true, onDone: () => {}},
-    victory: {animationName: 'victory', loop: false, onDone: () => this.player2State = 'idle'},
+  playerStates: {
+    1: {lives: number, currentState: string},
+    2: {lives: number, currentState: string},
+  } = {
+    1: {
+      lives: 5,
+      currentState: 'idle'
+    },
+    2: {
+      lives: 5,
+      currentState: 'idle'
+    }
   }
 
   constructor(private http: HttpClient) { }
@@ -63,56 +64,56 @@ export class GameComponent implements OnInit {
   }
 
   resetGame(): void {
-    this.player1Ghost = 0;
-    this.player2Ghost = 0;
+    this.playerStates = {
+      1: {
+        lives: 5,
+        currentState: 'idle'
+      },
+      2: {
+        lives: 5,
+        currentState: 'idle'
+      }
+    }
 
-    this.player1State = 'idle';
-    this.player2State = 'idle';
+    this.pastWords = [];
 
     this.textValue = '';
   }
 
   getGhost(num: number): string {
     return 'GHOST'.slice(0, num)
-  } 
+  }
 
-  playerInput(key: string): void {
-    this.textValue = `${this.textValue}${key}`
+  playerInput(key: string, player: 1 | 2): void {
+    const newWord = `${this.textValue}${key}`
+    const otherPlayer = player === 1 ? 2 : 1;
 
-    if (this.wordTree.has(this.textValue) || this.wordTree.getNode(this.textValue) === null) {
+    if (this.wordTree.has(newWord) || this.wordTree.getNode(newWord) === null) {
+      this.playerStates[player].lives--;
+      
+      this.playerStates[player].currentState = 'hit'
+      this.playerStates[otherPlayer].currentState = 'victory'
+
+      this.pastWords.push(newWord);
+
       this.textValue = '';
-      this.player1Ghost++;
-
-      this.player1State = 'hit'
-      this.player2State = 'victory'
     } else {
-      const nextChar = this.computerNextMove();
-      const word = `${this.textValue}${nextChar}`;
-
-      if (!nextChar || this.wordTree.has(word)) {
-        this.textValue = '';
-        this.player2Ghost++;
-
-        this.player2State = 'hit'
-        this.player1State = 'victory'
-      } else {
-        this.textValue = word;
-      }
+      this.textValue = newWord;
     }
 
-    if (this.player1Ghost >= 5) {
-      this.player1State = 'ghostEnter';
-      this.player2State = 'danceEnter';
-    } else if (this.player2Ghost >= 5) {
-      this.player2State = 'ghostEnter';
-      this.player1State = 'danceEnter';
+    if (this.playerStates[player].lives <= 0) {
+      this.playerStates[player].currentState = 'ghostEnter'
+      this.playerStates[otherPlayer].currentState = 'danceEnter'
+    }
 
+    if (player === 1 && this.textValue.length > 0) {
+      const nextMove = this.computerNextMove();
+
+      this.playerInput(nextMove || 'x', 2)
     }
   }
 
   computerNextMove(): string | null {
-    console.log('node', this.wordTree.getNode(this.textValue))
-
     const node = this.wordTree.getNode(this.textValue);
 
     if (!node) {
@@ -135,7 +136,6 @@ export class GameComponent implements OnInit {
       return possibleOddPlays[Math.floor(Math.random() * possibleOddPlays.length)];
     } else {
       const longestWord = this.findLongestPlayableWord([...node.completions]);
-      console.log('longest word', longestWord)
       return longestWord.length > 0 ? longestWord.slice(this.textValue.length).charAt(0) : null;
     }
   }

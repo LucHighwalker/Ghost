@@ -15,14 +15,10 @@ export class WordTree {
         this._maxWordLength = maxWordLength;
 
         words.forEach(word => this.addWord(word.toLowerCase()));
-
-        console.log('word tree: ', this)
     }
 
     addWord(word: string): void {
         if (word.length < this._minWordLength || word.length > this._maxWordLength) return;
-
-        // console.log('adding word:', word)
 
         const firstChar = word.charAt(0);
         if (!this.getRoot(firstChar)) {

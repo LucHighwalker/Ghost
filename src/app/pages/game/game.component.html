@@ -7,14 +7,14 @@
         <div class="player-container">
             <div class="health">
                 <img src="assets/mushroom.png" alt="mushroom" width="16px" height="16px">
-                <span>&nbsp;x&nbsp;{{ 5 - player1Ghost }}</span>
+                <span>&nbsp;x&nbsp;{{ playerStates[1].lives }}</span>
             </div>
-            <div class="player" [ngClass]="{ ghost: this.player1Ghost >= 5}">
+            <div class="player" [ngClass]="{ ghost: this.playerStates[1].lives <= 0}">
                 <gst-sprite 
                     [spriteSheet]="'assets/sprites.png'" 
-                    [animation]="Player1Animations[player1States[player1State].animationName]" 
-                    [loop]="player1States[player1State].loop"
-                    (animationEnded)="player1States[player1State].onDone()"
+                    [animation]="Player1Animations[animationStates[playerStates[1].currentState].animationName]" 
+                    [loop]="animationStates[playerStates[1].currentState].loop"
+                    (animationEnded)="animationStates[playerStates[1].currentState].onDone(1)"
                 ></gst-sprite>
             </div>
         </div>
@@ -22,14 +22,14 @@
         <div class="player-container">
             <div class="health">
                 <img src="assets/mushroom.png" alt="mushroom" width="16px" height="16px">
-                <span>&nbsp;x&nbsp;{{ 5 - player2Ghost }}</span>
+                <span>&nbsp;x&nbsp;{{ playerStates[2].lives }}</span>
             </div>
-            <div class="player flipped" [ngClass]="{ ghost: this.player2Ghost >= 5}">
+            <div class="player flipped" [ngClass]="{ ghost: this.playerStates[2].lives <= 0}">
                 <gst-sprite 
                     [spriteSheet]="'assets/sprites.png'" 
-                    [animation]="Player2Animations[player2States[player2State].animationName]" 
-                    [loop]="player2States[player2State].loop"
-                    (animationEnded)="player2States[player2State].onDone()"
+                    [animation]="Player2Animations[animationStates[playerStates[2].currentState].animationName]" 
+                    [loop]="animationStates[playerStates[2].currentState].loop"
+                    (animationEnded)="animationStates[playerStates[2].currentState].onDone(2)"
                 ></gst-sprite>
             </div>
         </div>
@@ -38,17 +38,23 @@
     <h2>{{textValue.length > 0 ? textValue : '_' }}</h2>
     
     <div class="keyboard-container">
-        <div class="keyboard-overlay" [ngClass]="{ hidden: player1Ghost < 5 && player2Ghost < 5 }">
-            <h2>Player {{ player1Ghost >= 5 ? '2' : '1' }} wins!</h2>
+        <div class="keyboard-overlay" [ngClass]="{ hidden: playerStates[1].lives > 0 && playerStates[2].lives > 0 }">
+            <h2>Player {{ playerStates[1].lives <= 0 ? '2' : '1' }} wins!</h2>
             <button class="kbc-button" (click)="resetGame()">Restart</button>
         </div>
 
-        <div class="keyboard" [ngClass]="{disabled: loading || player1Ghost >= 5 || player2Ghost >= 5}">
+        <div class="keyboard" [ngClass]="{disabled: loading || playerStates[1].lives <= 0 || playerStates[2].lives <= 0}">
             <div class="keyboard-row" *ngFor="let row of Keyboard">
-                <button class="kbc-button" *ngFor="let key of row" (click)="playerInput(key)">
+                <button class="kbc-button" *ngFor="let key of row" (click)="playerInput(key, 1)">
                     <span>{{ key }}</span>
                 </button>
             </div>
         </div>
+    </div>
+
+    <div class="past-words">
+        <span>&nbsp;</span>
+        <span *ngFor="let word of pastWords" [ngClass]="{strike: !wordTree.has(word)}">{{word}}</span>
+        <span>&nbsp;</span>
     </div>
 </div>
