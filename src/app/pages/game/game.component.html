@@ -10,41 +10,50 @@
 <h2>Player Ghost: {{getGhost(playerGhost)}}</h2>
 <h2>Computer Ghost: {{getGhost(computerGhost)}}</h2> -->
 
-<div class="game-title">
-    <h1>A very Ghostly Ghost Game</h1>
-</div>
+<div class="game-container">
+    <div class="game-title">
+        <h1>A very Ghostly Ghost Game</h1>
+    </div>
 
-<div class="player-status">
-    <div class="player-container">
-        <div class="health">
-            <img src="assets/mushroom.png" alt="mushroom" width="16px" height="16px">
-            <span>&nbsp;x&nbsp;{{ 5 - player1Ghost }}</span>
+    <div class="player-status">
+        <div class="player-container">
+            <div class="health">
+                <img src="assets/mushroom.png" alt="mushroom" width="16px" height="16px">
+                <span>&nbsp;x&nbsp;{{ 5 - player1Ghost }}</span>
+            </div>
+            <div class="player" [ngClass]="{ ghost: this.player1Ghost >= 5}">
+                <gst-sprite 
+                    [spriteSheet]="'assets/sprites.png'" 
+                    [animation]="Player1Animations[player1States[player1State].animationName]" 
+                    [loop]="player1States[player1State].loop"
+                    (animationEnded)="player1States[player1State].onDone()"
+                ></gst-sprite>
+            </div>
         </div>
-        <div class="player" [ngClass]="{ ghost: this.player1Ghost >= 5}">
-            <gst-sprite 
-                [spriteSheet]="'assets/sprites.png'" 
-                [animation]="Player1Animations[player1States[player1State].animationName]" 
-                [loop]="player1States[player1State].loop"
-                (animationEnded)="player1States[player1State].onDone()"
-            ></gst-sprite>
+        
+        <div class="player-container">
+            <div class="health">
+                <img src="assets/mushroom.png" alt="mushroom" width="16px" height="16px">
+                <span>&nbsp;x&nbsp;{{ 5 - player2Ghost }}</span>
+            </div>
+            <div class="player" [ngClass]="{ ghost: this.player2Ghost >= 5}">
+                <gst-sprite 
+                    [spriteSheet]="'assets/sprites.png'" 
+                    [animation]="Player1Animations[player2States[player2State].animationName]" 
+                    [loop]="player2States[player2State].loop"
+                    (animationEnded)="player2States[player2State].onDone()"
+                ></gst-sprite>
+            </div>
         </div>
     </div>
-    
-    <div class="player-container">
-        <div class="health">
-            <img src="assets/mushroom.png" alt="mushroom" width="16px" height="16px">
-            <span>&nbsp;x&nbsp;{{ 5 - player2Ghost }}</span>
-        </div>
-        <div class="player" [ngClass]="{ ghost: this.player2Ghost >= 5}">
-            <gst-sprite 
-                [spriteSheet]="'assets/sprites.png'" 
-                [animation]="Player1Animations[player2States[player2State].animationName]" 
-                [loop]="player2States[player2State].loop"
-                (animationEnded)="player2States[player2State].onDone()"
-            ></gst-sprite>
+
+    <h2>{{textValue.length > 0 ? textValue : '_' }}</h2>
+        
+    <div class="keyboard" [ngClass]="{disabled: loading || player1Ghost >= 5 || player2Ghost >= 5}">
+        <div class="keyboard-row" *ngFor="let row of Keyboard">
+            <button class="kbc-button" *ngFor="let key of row" (click)="playerInput(key)">
+                <span>{{ key }}</span>
+            </button>
         </div>
     </div>
-    
 </div>
-
-<input #textInput type="text" [disabled]="loading || player1Ghost >= 5 || player2Ghost >= 5" (keyup)="playerInput($event)"/>

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import {  Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { PlayerAnimations } from 'src/app/animations';
+import { Keyboard } from 'src/app/keyboard';
 import { WordNode, WordTree } from 'src/app/word-tree/word.tree';
 
 @Component({
@@ -10,6 +11,8 @@ import { WordNode, WordTree } from 'src/app/word-tree/word.tree';
 })
 export class GameComponent implements OnInit {
   @ViewChild('textInput') textInput: ElementRef<HTMLInputElement> | undefined;
+
+  Keyboard = Keyboard;
 
   Player1Animations = PlayerAnimations;
   
@@ -62,17 +65,8 @@ export class GameComponent implements OnInit {
     return 'GHOST'.slice(0, num)
   } 
 
-  playerInput(ev: KeyboardEvent): void {
-    if (!this.textInput) return;
-
-    if (!/^[a-z]{1}$/.test(ev.key)) {
-      this.textInput.nativeElement.value = this.textValue;
-      return;
-    }
-
-    console.log('input', ev)
-
-    this.textValue = `${this.textValue}${ev.key}`
+  playerInput(key: string): void {
+    this.textValue = `${this.textValue}${key}`
 
     if (this.wordTree.has(this.textValue) || this.wordTree.getNode(this.textValue) === null) {
       this.textValue = '';
@@ -103,8 +97,6 @@ export class GameComponent implements OnInit {
       this.player1State = 'danceEnter';
 
     }
-
-    this.textInput.nativeElement.value = this.textValue;
   }
 
   computerNextMove(): string | null {
