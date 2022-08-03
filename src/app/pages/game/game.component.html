@@ -1,4 +1,4 @@
-<h1>Game</h1>
+<!-- <h1>Game</h1>
 
 <h2 *ngIf="playerGhost >= 5">Computer Won!</h2>
 <h2 *ngIf="computerGhost >= 5">Player Won!</h2>
@@ -8,6 +8,16 @@
 <br>
 <br>
 <h2>Player Ghost: {{getGhost(playerGhost)}}</h2>
-<h2>Computer Ghost: {{getGhost(computerGhost)}}</h2>
+<h2>Computer Ghost: {{getGhost(computerGhost)}}</h2> -->
+
+<div class="game-title">
+    <h1>A very Ghostly Ghost Game</h1>
+</div>
+
+<div class="player-status">
+    <div class="player">
+        <gst-sprite [spriteSheet]="'assets/sprites.png'"></gst-sprite>
+    </div>
+</div>
 
 <input #textInput type="text" [disabled]="loading || playerGhost >= 5 || computerGhost >= 5" (keyup)="playerInput($event)"/>
