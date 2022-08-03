@@ -6,7 +6,7 @@ import { MainMenuComponent } from './pages/main-menu/main-menu.component';
 const routes: Routes = [
   {path: 'main', component: MainMenuComponent},
   {path: 'game', component: GameComponent},
-  {path: '**', redirectTo: 'game'}
+  {path: '**', redirectTo: 'main'}
 ];
 
 @NgModule({
