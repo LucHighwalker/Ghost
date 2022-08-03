@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import {  Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { PlayerAnimations } from 'src/app/animations';
+import { ComputerAnimations, PlayerAnimations } from 'src/app/animations';
 import { Keyboard } from 'src/app/keyboard';
 import { WordNode, WordTree } from 'src/app/word-tree/word.tree';
 
@@ -15,6 +15,7 @@ export class GameComponent implements OnInit {
   Keyboard = Keyboard;
 
   Player1Animations = PlayerAnimations;
+  Player2Animations = ComputerAnimations;
   
   wordTree: WordTree = new WordTree([]);
 
@@ -59,6 +60,16 @@ export class GameComponent implements OnInit {
       this.wordTree = new WordTree(words, 4);
       this.loading = false;
     })
+  }
+
+  resetGame(): void {
+    this.player1Ghost = 0;
+    this.player2Ghost = 0;
+
+    this.player1State = 'idle';
+    this.player2State = 'idle';
+
+    this.textValue = '';
   }
 
   getGhost(num: number): string {

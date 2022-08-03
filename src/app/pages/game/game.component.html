@@ -1,15 +1,3 @@
-<!-- <h1>Game</h1>
-
-<h2 *ngIf="playerGhost >= 5">Computer Won!</h2>
-<h2 *ngIf="computerGhost >= 5">Player Won!</h2>
-
-<br>
-<span>Processing: {{loading}}</span>
-<br>
-<br>
-<h2>Player Ghost: {{getGhost(playerGhost)}}</h2>
-<h2>Computer Ghost: {{getGhost(computerGhost)}}</h2> -->
-
 <div class="game-container">
     <div class="game-title">
         <h1>A very Ghostly Ghost Game</h1>
@@ -36,10 +24,10 @@
                 <img src="assets/mushroom.png" alt="mushroom" width="16px" height="16px">
                 <span>&nbsp;x&nbsp;{{ 5 - player2Ghost }}</span>
             </div>
-            <div class="player" [ngClass]="{ ghost: this.player2Ghost >= 5}">
+            <div class="player flipped" [ngClass]="{ ghost: this.player2Ghost >= 5}">
                 <gst-sprite 
                     [spriteSheet]="'assets/sprites.png'" 
-                    [animation]="Player1Animations[player2States[player2State].animationName]" 
+                    [animation]="Player2Animations[player2States[player2State].animationName]" 
                     [loop]="player2States[player2State].loop"
                     (animationEnded)="player2States[player2State].onDone()"
                 ></gst-sprite>
@@ -48,12 +36,19 @@
     </div>
 
     <h2>{{textValue.length > 0 ? textValue : '_' }}</h2>
-        
-    <div class="keyboard" [ngClass]="{disabled: loading || player1Ghost >= 5 || player2Ghost >= 5}">
-        <div class="keyboard-row" *ngFor="let row of Keyboard">
-            <button class="kbc-button" *ngFor="let key of row" (click)="playerInput(key)">
-                <span>{{ key }}</span>
-            </button>
+    
+    <div class="keyboard-container">
+        <div class="keyboard-overlay" [ngClass]="{ hidden: player1Ghost < 5 && player2Ghost < 5 }">
+            <h2>Player {{ player1Ghost >= 5 ? '2' : '1' }} wins!</h2>
+            <button class="kbc-button" (click)="resetGame()">Restart</button>
+        </div>
+
+        <div class="keyboard" [ngClass]="{disabled: loading || player1Ghost >= 5 || player2Ghost >= 5}">
+            <div class="keyboard-row" *ngFor="let row of Keyboard">
+                <button class="kbc-button" *ngFor="let key of row" (click)="playerInput(key)">
+                    <span>{{ key }}</span>
+                </button>
+            </div>
         </div>
     </div>
 </div>
