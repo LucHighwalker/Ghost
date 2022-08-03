@@ -3,7 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { GameComponent } from './pages/game/game.component';
 
 const routes: Routes = [
-  {path: 'game', component: GameComponent}
+  {path: 'game', component: GameComponent},
+  {path: '**', redirectTo: 'game'}
 ];
 
 @NgModule({
