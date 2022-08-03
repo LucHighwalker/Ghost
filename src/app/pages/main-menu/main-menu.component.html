@@ -1,0 +1,12 @@
+<div class="main-menu">
+    <div class="game-title">
+        <h1>A very Ghostly Ghost Game</h1>
+    </div>
+
+    <button class="kbc-button" (click)="playGame()">Play Game</button>
+    <button class="kbc-button" (click)="displayInstructions = !displayInstructions">Instructions</button>
+</div>
+
+<div class="instructions overlay" [ngClass]="{hidden: !displayInstructions}">
+    <p>The rules of ghost are relatively simple: each player takes turns adding a letter to an ever-growing word fragment.  Try not to spell a word (of length 4 letters or more).  Try to force another player to spell a word, or else try to get a player to say a letter that makes it impossible to form a word.</p>
+</div>

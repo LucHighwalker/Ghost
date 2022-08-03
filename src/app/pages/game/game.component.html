@@ -1,8 +1,4 @@
 <div class="game-container">
-    <div class="game-title">
-        <h1>A very Ghostly Ghost Game</h1>
-    </div>
-
     <div class="player-status">
         <div class="player-container">
             <div class="health">
@@ -35,12 +31,18 @@
         </div>
     </div>
 
-    <h2>{{textValue.length > 0 ? textValue : '_' }}</h2>
+
+    <h2 *ngIf="(playerStates[1].lives <= 0 || playerStates[2].lives <= 0); else textVal">Player {{ playerStates[1].lives <= 0 ? '2' : '1' }} wins!</h2>
+    
+    <ng-template #textVal>
+        <h2>{{textValue.length > 0 ? textValue : '_' }}</h2>
+    </ng-template>
+    
     
     <div class="keyboard-container">
-        <div class="keyboard-overlay" [ngClass]="{ hidden: playerStates[1].lives > 0 && playerStates[2].lives > 0 }">
-            <h2>Player {{ playerStates[1].lives <= 0 ? '2' : '1' }} wins!</h2>
+        <div class="keyboard-overlay overlay" [ngClass]="{ hidden: playerStates[1].lives > 0 && playerStates[2].lives > 0 }">
             <button class="kbc-button" (click)="resetGame()">Restart</button>
+            <button class="kbc-button" (click)="mainMenu()">Main Menu</button>
         </div>
 
         <div class="keyboard" [ngClass]="{disabled: loading || playerStates[1].lives <= 0 || playerStates[2].lives <= 0}">

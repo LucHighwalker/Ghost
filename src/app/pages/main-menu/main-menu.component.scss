@@ -1,0 +1,17 @@
+.main-menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding: 5rem 0;
+}
+
+.instructions {
+    margin: 1rem;
+    transition: opacity 1s ease-in-out;
+}
+
+.instructions.hidden {
+    opacity: 0 !important;
+}

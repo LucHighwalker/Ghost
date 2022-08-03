@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import {  Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { ComputerAnimations, PlayerAnimations } from 'src/app/animations';
 import { Keyboard } from 'src/app/keyboard';
 import { WordNode, WordTree } from 'src/app/word-tree/word.tree';
@@ -49,7 +50,7 @@ export class GameComponent implements OnInit {
     }
   }
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   ngOnInit(): void {
     this.processWordList();
@@ -78,6 +79,10 @@ export class GameComponent implements OnInit {
     this.pastWords = [];
 
     this.textValue = '';
+  }
+
+  mainMenu(): void {
+    this.router.navigate(['main'])
   }
 
   getGhost(num: number): string {
