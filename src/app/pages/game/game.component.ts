@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import {  Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { PlayerAnimations } from 'src/app/animations';
 import { WordNode, WordTree } from 'src/app/word-tree/word.tree';
 
 @Component({
@@ -9,6 +10,8 @@ import { WordNode, WordTree } from 'src/app/word-tree/word.tree';
 })
 export class GameComponent implements OnInit {
   @ViewChild('textInput') textInput: ElementRef<HTMLInputElement> | undefined;
+
+  PlayerAnimations = PlayerAnimations;
   
   wordTree: WordTree = new WordTree([]);
 

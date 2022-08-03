@@ -16,7 +16,11 @@
 
 <div class="player-status">
     <div class="player">
-        <gst-sprite [spriteSheet]="'assets/sprites.png'"></gst-sprite>
+        <gst-sprite [spriteSheet]="'assets/sprites.png'" [animation]="PlayerAnimations['dance']"></gst-sprite>
+        <gst-sprite [spriteSheet]="'assets/sprites.png'" [animation]="PlayerAnimations['danceEnter']"></gst-sprite>
+        <gst-sprite [spriteSheet]="'assets/sprites.png'" [animation]="PlayerAnimations['hit']"></gst-sprite>
+        <gst-sprite [spriteSheet]="'assets/sprites.png'" [animation]="PlayerAnimations['idle']"></gst-sprite>
+        <gst-sprite [spriteSheet]="'assets/sprites.png'" [animation]="PlayerAnimations['victory']"></gst-sprite>
     </div>
 </div>
 

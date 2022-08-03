@@ -3,7 +3,6 @@ import { AfterViewInit, Component, DoCheck, ElementRef, Input, OnDestroy, ViewCh
 @Component({
   selector: 'gst-sprite',
   template: `
-  <span>sprite</span>
     <canvas #canvas width="30px" height="39px"></canvas>
   `,
   styles: [
@@ -21,16 +20,7 @@ export class SpriteComponent implements AfterViewInit, OnDestroy {
   @Input() spacing: number = 0;
 
   private _animationFrame: number = 0;
-  @Input() animation: [number, number][] = [
-    [1, 0],
-    [1, 7],
-    [1, 6],
-    [1, 4],
-    [2, 6],
-    [2, 6],
-    [2, 6],
-    [2, 6],
-  ];
+  @Input() animation: [number, number][] = [[0, 0]];
   @Input() frameTime: number = 250;
   @Input() loop: boolean = true;
   @Input() disableAnimation: boolean = false;
@@ -60,12 +50,14 @@ export class SpriteComponent implements AfterViewInit, OnDestroy {
   }
 
   animate(): void {
-    if (this.disableAnimation) return;
+    if (this.disableAnimation || !this.animation) return;
     if (this._animationFrame < this.animation.length) this._animationFrame++;
     if (this._animationFrame >= this.animation.length) this._animationFrame = this.loop ? 0 : this._animationFrame - 1;
   }
 
   drawSprite(): void {
+    if (!this.animation) return;
+
     const context = this.canvas?.nativeElement.getContext('2d');
 
     if (!this.canvas || !context) {
