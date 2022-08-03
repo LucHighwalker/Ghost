@@ -24,7 +24,7 @@ export class WordTree {
     addWord(word: string): void {
         if (word.length < this._minWordLength || word.length > this._maxWordLength) return;
 
-        console.log('adding word:', word)
+        // console.log('adding word:', word)
 
         const firstChar = word.charAt(0);
         if (!this.getRoot(firstChar)) {
@@ -53,6 +53,11 @@ export class WordTree {
     getRoot(character: string): WordNode | null {
         return this.roots[character] || null;
     }
+
+    getNode(word: string): WordNode | null {
+        const char = word.charAt(0).toLowerCase();
+        return this.roots[char] ? this.roots[char].getNode(word) : null;
+      }
 }
 
 export class WordNode {
