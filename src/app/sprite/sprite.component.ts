@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, DoCheck, ElementRef, Input, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, DoCheck, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'gst-sprite',
@@ -19,14 +19,25 @@ export class SpriteComponent implements AfterViewInit, OnDestroy {
   @Input() borderWidth: number = 0;
   @Input() spacing: number = 0;
 
+  private _animationCache: string = '';
   private _animationFrame: number = 0;
-  @Input() animation: [number, number][] = [[0, 0]];
+  private _animation: [number, number][] = [[0, 0]];
+  @Input() 
+  set animation(anim: [number, number][]) {
+    const cacheID = anim.map(f => f.join('-')).join('.');
+
+    if (this._animationCache !== cacheID) {
+      this._animationFrame = 0;
+      this._animation = anim;
+    }
+  }
   @Input() frameTime: number = 250;
   @Input() loop: boolean = true;
   @Input() disableAnimation: boolean = false;
 
-  private _image: HTMLImageElement = new Image();
+  @Output() animationEnded: EventEmitter<void> = new EventEmitter<void>();
 
+  private _image: HTMLImageElement = new Image();
   private _animationIntervalID: any;
 
   constructor() { }
@@ -50,13 +61,19 @@ export class SpriteComponent implements AfterViewInit, OnDestroy {
   }
 
   animate(): void {
-    if (this.disableAnimation || !this.animation) return;
-    if (this._animationFrame < this.animation.length) this._animationFrame++;
-    if (this._animationFrame >= this.animation.length) this._animationFrame = this.loop ? 0 : this._animationFrame - 1;
+    if (this.disableAnimation || !this._animation) return;
+    if (this._animationFrame < this._animation.length) this._animationFrame++;
+    if (this._animationFrame >= this._animation.length){ 
+      if (this.loop) this._animationFrame = 0;
+      else {
+        this._animationFrame--;
+        this.animationEnded.emit();
+      }
+    };
   }
 
   drawSprite(): void {
-    if (!this.animation) return;
+    if (!this._animation) return;
 
     const context = this.canvas?.nativeElement.getContext('2d');
 
@@ -67,7 +84,7 @@ export class SpriteComponent implements AfterViewInit, OnDestroy {
 
     context.clearRect(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height)
 
-    const pos = this.spriteToImageCoordinates(...this.animation[this._animationFrame])
+    const pos = this.spriteToImageCoordinates(...this._animation[this._animationFrame])
 
     context.drawImage(this._image, pos.x, pos.y, this.width, this.height, 0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
   }

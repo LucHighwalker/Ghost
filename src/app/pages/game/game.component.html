@@ -16,12 +16,15 @@
 
 <div class="player-status">
     <div class="player">
-        <gst-sprite [spriteSheet]="'assets/sprites.png'" [animation]="PlayerAnimations['dance']"></gst-sprite>
-        <gst-sprite [spriteSheet]="'assets/sprites.png'" [animation]="PlayerAnimations['danceEnter']"></gst-sprite>
-        <gst-sprite [spriteSheet]="'assets/sprites.png'" [animation]="PlayerAnimations['hit']"></gst-sprite>
-        <gst-sprite [spriteSheet]="'assets/sprites.png'" [animation]="PlayerAnimations['idle']"></gst-sprite>
-        <gst-sprite [spriteSheet]="'assets/sprites.png'" [animation]="PlayerAnimations['victory']"></gst-sprite>
+        <gst-sprite 
+            [spriteSheet]="'assets/sprites.png'" 
+            [animation]="PlayerAnimations[playerStates[currentPlayerState].animationName]" 
+            [loop]="playerStates[currentPlayerState].loop"
+            (animationEnded)="playerStates[currentPlayerState].onDone()"
+        ></gst-sprite>
     </div>
 </div>
+
+<button (click)="currentPlayerState = 'danceEnter'">dance</button>
 
 <input #textInput type="text" [disabled]="loading || playerGhost >= 5 || computerGhost >= 5" (keyup)="playerInput($event)"/>

@@ -22,7 +22,14 @@ export class GameComponent implements OnInit {
   playerGhost: number = 0;
   computerGhost: number = 0;
 
-  constructor(private http: HttpClient, private renderer: Renderer2) { }
+  currentPlayerState: string = 'idle';
+  playerStates: any = {
+    idle: {animationName: 'idle', loop: true, onDone: () => {}},
+    danceEnter: {animationName: 'danceEnter', loop: false, onDone: () => this.currentPlayerState = 'dance'},
+    dance: {animationName: 'dance', loop: true, onDone: () => {}},
+  }
+
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
     this.processWordList();
