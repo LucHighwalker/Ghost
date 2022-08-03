@@ -1,5 +1,9 @@
 <h1>Game</h1>
-
+<br>
 <span>Processing: {{loading}}</span>
+<br>
+<br>
+<h2>Player Ghost: {{getGhost(playerGhost)}}</h2>
+<h2>Computer Ghost: {{getGhost(computerGhost)}}</h2>
 
-<input #textInput type="text" (keyup)="inputChanged($event)"/>
+<input #textInput type="text" [disabled]="loading" (keyup)="playerInput($event)"/>

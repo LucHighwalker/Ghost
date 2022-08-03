@@ -1,18 +1,16 @@
 export class WordTree {
-    words: string[];
+    words: string[] = [];
+    wordsSet: Set<string> = new Set<string>();
     get size(): number {
         return this.words.length;
     }
 
-    roots: {[root: string]: WordNode}
+    roots: {[root: string]: WordNode} = {};
 
     private _minWordLength: number;
     private _maxWordLength: number;
 
     constructor(words: string[], minWordLength: number = 3, maxWordLength: number = 9999) {
-        this.words = [];
-        this.roots = {};
-
         this._minWordLength = minWordLength;
         this._maxWordLength = maxWordLength;
 
@@ -48,6 +46,11 @@ export class WordTree {
         }
 
         this.words.push(word)
+        this.wordsSet.add(word);
+    }
+
+    has(word: string): boolean {
+        return this.wordsSet.has(word)
     }
 
     getRoot(character: string): WordNode | null {
@@ -80,11 +83,23 @@ export class WordNode {
 
     private _wordsByLength: {[length: number]: string[]} = {};
 
-    private _longestOddLengthWord: number | null = null;
-    private _longestEvenLengthWord: number | null = null;
+    private _longestOddLengthWord: number = -1;
+    get longestOddLengthWord(): number {
+        return this._longestOddLengthWord;
+    }
+    private _longestEvenLengthWord: number = -1;
+    get longestEvenLengthWord(): number {
+        return this._longestEvenLengthWord;
+    }
 
-    private _shortestOddLengthWord: number | null = null;
-    private _shortestEvenLengthWord: number | null = null;
+    private _shortestOddLengthWord: number  = -1;
+    get shortestOddLengthWord(): number  {
+        return this._shortestOddLengthWord;
+    }
+    private _shortestEvenLengthWord: number  = -1;
+    get shortestEvenLengthWord(): number  {
+        return this._shortestEvenLengthWord;
+    }
 
     constructor(wordTree: WordTree, character: string, word: string) {
         this._wordTree = wordTree;
@@ -94,20 +109,23 @@ export class WordNode {
     }
 
     addWord(word: string): void {
+        if (this._completions.has(word)) return;
+
+
         if (word.length % 2 === 0) {
-            if (this._longestEvenLengthWord === null || this._longestEvenLengthWord < word.length) {
+            if (this._longestEvenLengthWord < 0 || this._longestEvenLengthWord < word.length) {
                 this._longestEvenLengthWord = word.length;
             }
             
-            if (this._shortestEvenLengthWord === null || this._shortestEvenLengthWord > word.length) {
+            if (this._shortestEvenLengthWord < 0 || this._shortestEvenLengthWord > word.length) {
                 this._shortestEvenLengthWord = word.length
             }
         } else {
-            if (this._longestOddLengthWord === null || this._longestOddLengthWord < word.length) {
+            if (this._longestOddLengthWord < 0 || this._longestOddLengthWord < word.length) {
                 this._longestOddLengthWord = word.length;
             }
             
-            if (this._shortestOddLengthWord === null || this._shortestOddLengthWord > word.length) {
+            if (this._shortestOddLengthWord < 0 || this._shortestOddLengthWord > word.length) {
                 this._shortestOddLengthWord = word.length
             }
         }
@@ -119,6 +137,10 @@ export class WordNode {
 
 
         this._completions.add(word);
+    }
+
+    getWordsByLength(length: number): string[] {
+        return this._wordsByLength[length] || [];
     }
 
     getChild(character: string): WordNode | null {
