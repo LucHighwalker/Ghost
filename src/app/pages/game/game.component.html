@@ -1,4 +1,8 @@
 <h1>Game</h1>
+
+<h2 *ngIf="playerGhost >= 5">Computer Won!</h2>
+<h2 *ngIf="computerGhost >= 5">Player Won!</h2>
+
 <br>
 <span>Processing: {{loading}}</span>
 <br>
@@ -6,4 +10,4 @@
 <h2>Player Ghost: {{getGhost(playerGhost)}}</h2>
 <h2>Computer Ghost: {{getGhost(computerGhost)}}</h2>
 
-<input #textInput type="text" [disabled]="loading" (keyup)="playerInput($event)"/>
+<input #textInput type="text" [disabled]="loading || playerGhost >= 5 || computerGhost >= 5" (keyup)="playerInput($event)"/>
