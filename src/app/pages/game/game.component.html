@@ -15,16 +15,36 @@
 </div>
 
 <div class="player-status">
-    <div class="player">
-        <gst-sprite 
-            [spriteSheet]="'assets/sprites.png'" 
-            [animation]="PlayerAnimations[playerStates[currentPlayerState].animationName]" 
-            [loop]="playerStates[currentPlayerState].loop"
-            (animationEnded)="playerStates[currentPlayerState].onDone()"
-        ></gst-sprite>
+    <div class="player-container">
+        <div class="health">
+            <img src="assets/mushroom.png" alt="mushroom" width="16px" height="16px">
+            <span>&nbsp;x&nbsp;{{ 5 - player1Ghost }}</span>
+        </div>
+        <div class="player" [ngClass]="{ ghost: this.player1Ghost >= 5}">
+            <gst-sprite 
+                [spriteSheet]="'assets/sprites.png'" 
+                [animation]="Player1Animations[player1States[player1State].animationName]" 
+                [loop]="player1States[player1State].loop"
+                (animationEnded)="player1States[player1State].onDone()"
+            ></gst-sprite>
+        </div>
     </div>
+    
+    <div class="player-container">
+        <div class="health">
+            <img src="assets/mushroom.png" alt="mushroom" width="16px" height="16px">
+            <span>&nbsp;x&nbsp;{{ 5 - player2Ghost }}</span>
+        </div>
+        <div class="player" [ngClass]="{ ghost: this.player2Ghost >= 5}">
+            <gst-sprite 
+                [spriteSheet]="'assets/sprites.png'" 
+                [animation]="Player1Animations[player2States[player2State].animationName]" 
+                [loop]="player2States[player2State].loop"
+                (animationEnded)="player2States[player2State].onDone()"
+            ></gst-sprite>
+        </div>
+    </div>
+    
 </div>
 
-<button (click)="currentPlayerState = 'danceEnter'">dance</button>
-
-<input #textInput type="text" [disabled]="loading || playerGhost >= 5 || computerGhost >= 5" (keyup)="playerInput($event)"/>
+<input #textInput type="text" [disabled]="loading || player1Ghost >= 5 || player2Ghost >= 5" (keyup)="playerInput($event)"/>

@@ -11,7 +11,7 @@ import { WordNode, WordTree } from 'src/app/word-tree/word.tree';
 export class GameComponent implements OnInit {
   @ViewChild('textInput') textInput: ElementRef<HTMLInputElement> | undefined;
 
-  PlayerAnimations = PlayerAnimations;
+  Player1Animations = PlayerAnimations;
   
   wordTree: WordTree = new WordTree([]);
 
@@ -19,14 +19,29 @@ export class GameComponent implements OnInit {
 
   loading: boolean = true;
 
-  playerGhost: number = 0;
-  computerGhost: number = 0;
+  player1Ghost: number = 0;
+  player2Ghost: number = 0;
 
-  currentPlayerState: string = 'idle';
-  playerStates: any = {
+  player1State: string = 'idle';
+  player1States: any = {
     idle: {animationName: 'idle', loop: true, onDone: () => {}},
-    danceEnter: {animationName: 'danceEnter', loop: false, onDone: () => this.currentPlayerState = 'dance'},
+    hit: {animationName: 'hit', loop: false, onDone: () => this.player1State = 'idle'},
+    danceEnter: {animationName: 'danceEnter', loop: false, onDone: () => this.player1State = 'dance'},
     dance: {animationName: 'dance', loop: true, onDone: () => {}},
+    ghostEnter: {animationName: 'ghostEnter', loop: false, onDone: () => this.player1State = 'ghost'},
+    ghost: {animationName: 'ghost', loop: true, onDone: () => {}},
+    victory: {animationName: 'victory', loop: false, onDone: () => this.player1State = 'idle'},
+  }
+
+  player2State: string = 'idle';
+  player2States: any = {
+    idle: {animationName: 'idle', loop: true, onDone: () => {}},
+    hit: {animationName: 'hit', loop: false, onDone: () => this.player2State = 'idle'},
+    danceEnter: {animationName: 'danceEnter', loop: false, onDone: () => this.player2State = 'dance'},
+    dance: {animationName: 'dance', loop: true, onDone: () => {}},
+    ghostEnter: {animationName: 'ghostEnter', loop: false, onDone: () => this.player1State = 'ghost'},
+    ghost: {animationName: 'ghost', loop: true, onDone: () => {}},
+    victory: {animationName: 'victory', loop: false, onDone: () => this.player2State = 'idle'},
   }
 
   constructor(private http: HttpClient) { }
@@ -61,17 +76,32 @@ export class GameComponent implements OnInit {
 
     if (this.wordTree.has(this.textValue) || this.wordTree.getNode(this.textValue) === null) {
       this.textValue = '';
-      this.playerGhost++;
+      this.player1Ghost++;
+
+      this.player1State = 'hit'
+      this.player2State = 'victory'
     } else {
       const nextChar = this.computerNextMove();
       const word = `${this.textValue}${nextChar}`;
 
       if (!nextChar || this.wordTree.has(word)) {
         this.textValue = '';
-        this.computerGhost++;
+        this.player2Ghost++;
+
+        this.player2State = 'hit'
+        this.player1State = 'victory'
       } else {
         this.textValue = word;
       }
+    }
+
+    if (this.player1Ghost >= 5) {
+      this.player1State = 'ghostEnter';
+      this.player2State = 'danceEnter';
+    } else if (this.player2Ghost >= 5) {
+      this.player2State = 'ghostEnter';
+      this.player1State = 'danceEnter';
+
     }
 
     this.textInput.nativeElement.value = this.textValue;

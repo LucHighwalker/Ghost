@@ -16,6 +16,23 @@ export const PlayerAnimations: {[animation: string]: [number, number][]} = {
         [1, 0],
         [1, 9],
     ],
+
+    ghost: [
+        [3, 7],
+        [3, 8],
+        [3, 9],
+        [3, 8],
+    ],
+
+    ghostEnter: [
+        [3, 6],
+        [3, 6],
+        [3, 6],
+        [1, 7],
+        [1, 7],
+        [1, 8],
+        [1, 10],
+    ],
     
     hit: [
         [0, 7],
